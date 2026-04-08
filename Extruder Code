@@ -1,34 +1,37 @@
-const int motorPin = 9;
-const unsigned long runTime = 5000; // 3 seconds
+const int motorPin = 9; // Digital pin connected to the motor control circuit
+const unsigned long runTime = 5000; // Time to keep the motor on (in milliseconds)
 
-String input = "";
+String input = ""; // Stores text received from the Serial Monitor
 
 void setup() {
-  pinMode(motorPin, OUTPUT);
-  digitalWrite(motorPin, LOW);
+  pinMode(motorPin, OUTPUT); // Set the motor pin as an output
+  digitalWrite(motorPin, LOW); // Make sure the motor starts OFF
 
-  Serial.begin(9600);
-  Serial.println("Type run and press Send");
+  Serial.begin(9600); // Start serial communication at 9600 baud
+  Serial.println("Type run and press Send"); // Prompt the user in the Serial Monitor
 }
 
 void loop() {
+  // Check if any characters have been sent through Serial
   while (Serial.available() > 0) {
-    char c = Serial.read();
+    char c = Serial.read(); // Read one character at a time
 
+    // If the user pressed Enter, process the full command
     if (c == '\n' || c == '\r') {
-      input.trim();
+      input.trim(); // Remove extra spaces or newline characters
 
+      // If the command is "run", turn the motor on for the set time
       if (input == "run") {
         Serial.println("Motor ON");
-        digitalWrite(motorPin, HIGH);
-        delay(runTime);
-        digitalWrite(motorPin, LOW);
+        digitalWrite(motorPin, HIGH); // Turn the motor ON
+        delay(runTime); // Keep it running for 5 seconds
+        digitalWrite(motorPin, LOW); // Turn the motor OFF
         Serial.println("Motor OFF");
       }
 
-      input = "";
+      input = ""; // Clear the input for the next command
     } else {
-      input += c;
+      input += c; // Keep building the command character by character
     }
   }
 }
