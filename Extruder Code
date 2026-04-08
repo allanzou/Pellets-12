@@ -1,11 +1,11 @@
-const int motorPin = 9; // Digital pin connected to the motor control circuit
-const unsigned long runTime = 5000; // Time to keep the motor on (in milliseconds)
+const int motorControlPin = 9; // Digital pin connected to the motor control circuit
+const unsigned long motorRunTimeMs = 5000; // Time to keep the motor on (in milliseconds)
 
-String input = ""; // Stores text received from the Serial Monitor
+String serialInput = ""; // Stores text received from the Serial Monitor
 
 void setup() {
-  pinMode(motorPin, OUTPUT); // Set the motor pin as an output
-  digitalWrite(motorPin, LOW); // Make sure the motor starts OFF
+  pinMode(motorControlPin, OUTPUT); // Set the motor pin as an output
+  digitalWrite(motorControlPin, LOW); // Make sure the motor starts OFF
 
   Serial.begin(9600); // Start serial communication at 9600 baud
   Serial.println("Type run and press Send"); // Prompt the user in the Serial Monitor
@@ -14,24 +14,24 @@ void setup() {
 void loop() {
   // Check if any characters have been sent through Serial
   while (Serial.available() > 0) {
-    char c = Serial.read(); // Read one character at a time
+    char incomingChar = Serial.read(); // Read one character at a time
 
     // If the user pressed Enter, process the full command
-    if (c == '\n' || c == '\r') {
-      input.trim(); // Remove extra spaces or newline characters
+    if (incomingChar == '\n' || incomingChar == '\r') {
+      serialInput.trim(); // Remove extra spaces or newline characters
 
       // If the command is "run", turn the motor on for the set time
-      if (input == "run") {
+      if (serialInput == "run") {
         Serial.println("Motor ON");
-        digitalWrite(motorPin, HIGH); // Turn the motor ON
-        delay(runTime); // Keep it running for 5 seconds
-        digitalWrite(motorPin, LOW); // Turn the motor OFF
+        digitalWrite(motorControlPin, HIGH); // Turn the motor ON
+        delay(motorRunTimeMs); // Keep it running for 5 seconds
+        digitalWrite(motorControlPin, LOW); // Turn the motor OFF
         Serial.println("Motor OFF");
       }
 
-      input = ""; // Clear the input for the next command
+      serialInput = ""; // Clear the input for the next command
     } else {
-      input += c; // Keep building the command character by character
+      serialInput += incomingChar; // Keep building the command character by character
     }
   }
 }
